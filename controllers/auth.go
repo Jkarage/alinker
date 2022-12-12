@@ -19,7 +19,6 @@ func (auth Auth) Register(c *gin.Context) {
 		Email    string `idx:"{email},unique" bson:"email,omitempty" json:"email" binding:"required,email"`
 		Password string `json:"password" binding:"required,min=8"`
 		Username string `idx:"unique" json:"username" binding:"required,min=5,alphanum"`
-		Apps     int    `bson:"apps" json:"apps"`
 	}
 
 	var info signupInfo

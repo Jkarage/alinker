@@ -14,7 +14,7 @@ import (
 // Returns the connection, context, cancel if Ok
 // Returns an error if found one
 func Connect() (*mongo.Client, context.Context, context.CancelFunc, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 
 	connectionString, err := env.Env("DB_CONNECTION", "")
 	if err != nil {

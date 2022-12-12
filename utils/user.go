@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 
+	"github.com/jkarage/alinker/env"
 	"github.com/jkarage/alinker/models/db"
 	"github.com/jkarage/alinker/models/user"
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,8 +17,9 @@ func (userservice Userservice) Create(user *(user.User)) error {
 	client, ctx, cancel, _ := db.Connect()
 	defer cancel()
 
-	database := client.Database("Alinker")
-	usersCollection := database.Collection("users")
+	db, col := useDb()
+	database := client.Database(db)
+	usersCollection := database.Collection(col)
 	result := usersCollection.FindOne(ctx, bson.M{"email": user.Email})
 	nameResult := usersCollection.FindOne(ctx, bson.M{"username": user.Username})
 	if result.Err() == nil {
@@ -34,8 +36,9 @@ func (userservice Userservice) Get(id primitive.ObjectID) (bson.Raw, error) {
 	client, ctx, cancel, _ := db.Connect()
 	defer cancel()
 
-	database := client.Database("Alinker")
-	usersCollection := database.Collection("users")
+	db, col := useDb()
+	database := client.Database(db)
+	usersCollection := database.Collection(col)
 	userResult := usersCollection.FindOne(ctx, bson.M{
 		"_id": id,
 	})
@@ -49,8 +52,9 @@ func (userservice Userservice) Delete(id primitive.ObjectID) error {
 	client, ctx, cancel, _ := db.Connect()
 	defer cancel()
 
-	database := client.Database("Alinker")
-	userCollection := database.Collection("Users")
+	db, col := useDb()
+	database := client.Database(db)
+	userCollection := database.Collection(col)
 	result := userCollection.FindOneAndDelete(ctx, bson.M{
 		"_id": id,
 	})
@@ -67,8 +71,9 @@ func (userservice Userservice) FindByEmail(email string) (*user.User, error) {
 	client, ctx, cancel, _ := db.Connect()
 	defer cancel()
 
-	database := client.Database("Alinker")
-	usersCollection := database.Collection("users")
+	db, col := useDb()
+	database := client.Database(db)
+	usersCollection := database.Collection(col)
 	user := new(user.User)
 	result := usersCollection.FindOne(ctx, bson.M{
 		"email": email,
@@ -87,8 +92,9 @@ func (userservice Userservice) UpdateApps(email string) error {
 	client, ctx, cancel, _ := db.Connect()
 	defer cancel()
 
-	database := client.Database("Alinker")
-	usersCollection := database.Collection("users")
+	db, col := useDb()
+	database := client.Database(db)
+	usersCollection := database.Collection(col)
 
 	user := new(user.User)
 	result := usersCollection.FindOne(ctx, bson.M{
@@ -109,4 +115,16 @@ func (userservice Userservice) UpdateApps(email string) error {
 
 	return nil
 
+}
+
+func useDb() (string, string) {
+	db, err := env.Env("DB_NAME", "alinker")
+	if err != nil {
+		// log the err
+	}
+	collection, err := env.Env("COLLECTION_NAME", "users")
+	if err != nil {
+		// log the error
+	}
+	return db, collection
 }
