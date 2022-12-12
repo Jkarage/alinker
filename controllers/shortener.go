@@ -5,14 +5,15 @@ import (
 
 	"github.com/jkarage/alinker/env"
 	"github.com/jkarage/alinker/utils"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gin-gonic/gin"
 )
 
 // Request model definition
 type UrlCreationRequest struct {
-	LongUrl string `json:"long_url" binding:"required"`
-	UserId  string `json:"user_id" binding:"required"`
+	LongUrl string             `json:"long_url" binding:"required"`
+	UserId  primitive.ObjectID `json:"user_id" binding:"required"`
 }
 
 type Shortener struct{}
@@ -24,7 +25,10 @@ func (s Shortener) CreateShortUrl(c *gin.Context) {
 		return
 	}
 
-	shortUrl := utils.GenerateShortLink(creationRequest.LongUrl, creationRequest.UserId)
+	shortUrl, err := utils.GenerateShortLink(creationRequest.LongUrl, creationRequest.UserId)
+	if err != nil {
+		panic(err)
+	}
 	utils.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
 
 	host, err := env.Env("APP_HOST"+"/", "alinker.tk/")
