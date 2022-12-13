@@ -54,3 +54,7 @@ func (s Shortener) Home(c *gin.Context) {
 	for more and endpoints found on this api, go to Documentation page
 	at /docs`)
 }
+
+func (s Shortener) Docs(c *gin.Context) {
+	c.String(http.StatusOK, `The documentation Page`)
+}
