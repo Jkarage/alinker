@@ -9,6 +9,7 @@ import (
 func SetShortenerRouter(r *gin.Engine) {
 	short := new(controllers.Shortener)
 	r.GET("/", short.Home)
+	r.GET("/docs", short.Docs)
 	shortenerGroup := r.Group("/")
 	shortenerGroup.Use(middlewares.Authentication())
 	shortenerGroup.POST("/create-short-url", short.CreateShortUrl)
