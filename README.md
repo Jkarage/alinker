@@ -3,6 +3,9 @@
 This project is for showcasing my Golang skills for building apis
 Its live here [alinker] (<https://alinker.tk>)
 
+alinker is url shortener similar to bit.ly for developers, It uses
+redis for url mapping storage and mongodb for customers.
+
 ## Available endpoints
 
 ### `/docs`
