@@ -1,4 +1,4 @@
-# Getting started with alinker 
+# Getting started with alinker
 
 This project is for showcasing my Golang skills for building apis
 Its live here [alinker] (<https://alinker.tk>)
@@ -27,3 +27,10 @@ Creates a new user in the database, Read the [docs] (<https://alinker.tk/docs>) 
 ### `/login`
 
 Returns an JWT Authentication token in the header if a request is a success.
+
+## TODOS
+
+Some implemetation are still in progress
+
+- logging
+- some updates
