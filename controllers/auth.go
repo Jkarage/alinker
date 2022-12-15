@@ -32,7 +32,6 @@ func (auth Auth) Register(c *gin.Context) {
 	var user user.User
 	user.Email = info.Email
 	user.Username = info.Username
-	user.Apps = 0
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(info.Password), 15)
 	if err != nil {
@@ -43,7 +42,7 @@ func (auth Auth) Register(c *gin.Context) {
 	}
 	user.Password = string(hash)
 	var userservice utils.Userservice
-	err = userservice.Create(&user)
+	id, err := userservice.Create(&user)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -53,6 +52,7 @@ func (auth Auth) Register(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"Message": "Success Insertion",
+		"user_id": id,
 	})
 }
 

@@ -13,7 +13,7 @@ import (
 // Userservice is for handling user db relation queries
 type Userservice struct{}
 
-func (userservice Userservice) Create(user *(user.User)) error {
+func (userservice Userservice) Create(user *(user.User)) (primitive.ObjectID, error) {
 	client, ctx, cancel, _ := db.Connect()
 	defer cancel()
 
@@ -23,12 +23,12 @@ func (userservice Userservice) Create(user *(user.User)) error {
 	result := usersCollection.FindOne(ctx, bson.M{"email": user.Email})
 	nameResult := usersCollection.FindOne(ctx, bson.M{"username": user.Username})
 	if result.Err() == nil {
-		return errors.New("account with email already exists")
+		return primitive.NilObjectID, errors.New("account with email already exists")
 	} else if nameResult.Err() == nil {
-		return errors.New("username already taken")
+		return primitive.NilObjectID, errors.New("username already taken")
 	} else {
-		_, err := usersCollection.InsertOne(ctx, user)
-		return err
+		insertResult, err := usersCollection.InsertOne(ctx, user)
+		return (insertResult.InsertedID).(primitive.ObjectID), err
 	}
 }
 
