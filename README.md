@@ -14,7 +14,8 @@ for clear details and documentation of alinker api, how a developer can use it a
 
 ### `/create-short-url`
 
-Creates the shortened url and returns it, Expects a `long_url` and `user_id` keys in a json request.
+Creates the shortened url and returns it, Expects a `long_url` key in a json request.
+The user has to be Authenticated to access this endpoint, Authenticated user has a key `Authentication` having the returned key obtained in the header response after login.
 
 ### `/:shorturl`
 
@@ -22,11 +23,12 @@ Redirects the user to the long Url mapped with the given shorturl
 
 ### `/register`
 
-Creates a new user in the database, Read the [docs] (<https://alinker.tk/docs>) for more on the signature of the request.
+Creates a new user in the database, The endpoint expects `username`, `email` and `password` in a json request
 
 ### `/login`
 
-Returns an JWT Authentication token in the header if a request is a success.
+Expects `email`, `password` in a josn request.
+Response has a JWT Authentication token in the header if a request is a success. The key is `Authentication`.
 
 ## TODOS
 
