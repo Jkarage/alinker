@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/jkarage/alinker/env"
 	"github.com/jkarage/alinker/utils"
 )
 
@@ -21,7 +22,10 @@ func Authentication() gin.HandlerFunc {
 			// if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			// 	return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 			// }
-			secretKey := "secretkey"
+			secretKey, err := env.Env("SECRET_KEY", "secretkey")
+			if err != nil {
+				return nil, err
+			}
 			return []byte(secretKey), nil
 		})
 
@@ -37,7 +41,7 @@ func Authentication() gin.HandlerFunc {
 			userservice := utils.Userservice{}
 			user, err := userservice.FindByEmail(email)
 			if err != nil {
-				c.AbortWithStatusJSON(402, gin.H{
+				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 					"Error": "User not found",
 				})
 				return
@@ -45,7 +49,7 @@ func Authentication() gin.HandlerFunc {
 			c.Set("user", user)
 			c.Next()
 		} else {
-			c.AbortWithStatusJSON(400, gin.H{
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"Error": "Token is not valid",
 			})
 			return
