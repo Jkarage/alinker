@@ -87,44 +87,14 @@ func (userservice Userservice) FindByEmail(email string) (*user.User, error) {
 	return user, nil
 }
 
-// Update the Number of Apps
-func (userservice Userservice) UpdateApps(email string) error {
-	client, ctx, cancel, _ := db.Connect()
-	defer cancel()
-
-	db, col := useDb()
-	database := client.Database(db)
-	usersCollection := database.Collection(col)
-
-	user := new(user.User)
-	result := usersCollection.FindOne(ctx, bson.M{
-		"email": email,
-	})
-	err := result.Decode(&user)
-	if err != nil {
-		return errors.New(err.Error())
-	}
-	_, err = usersCollection.UpdateOne(ctx, bson.M{
-		"email": email,
-	}, bson.M{
-		"$set": bson.M{"apps": user.Apps + 1},
-	})
-	if err != nil {
-		return errors.New(err.Error())
-	}
-
-	return nil
-
-}
-
 func useDb() (string, string) {
 	db, err := env.Env("DB_NAME", "alinker")
 	if err != nil {
-		// log the err
+		panic(err)
 	}
 	collection, err := env.Env("COLLECTION_NAME", "users")
 	if err != nil {
-		// log the error
+		panic(err)
 	}
 	return db, collection
 }
