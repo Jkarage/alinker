@@ -4,13 +4,22 @@ This project is for showcasing my Golang skills for building apis
 Its live here [alinker] (<https://alinker.tk>)
 
 alinker is url shortener similar to bit.ly for developers, It uses
-redis for url mapping storage and mongodb for customers.
+redis for url mapping and mongodb for storing customers.
 
 ## Available endpoints
 
+### `/register`
+
+Creates a new user in the database, The endpoint expects `username`, `email` and `password` in a json formatted request body
+
+### `/login`
+
+The endpoint expects `email`, `password` in a json formatted request body.
+Response has a JWT Authentication token in the header if a request is a success. The key is named `Authentication`.You are supposed to add it in all secure endpoints in the header with the given key `Authentication`.
+
 ### `/docs`
 
-for clear details and documentation of alinker api, how a developer can use it and develop using it.
+For clear details and documentation of alinker api. The docs page is still in progress.
 
 ### `/create-short-url`
 
@@ -19,16 +28,7 @@ The user has to be Authenticated to access this endpoint, Authenticated user has
 
 ### `/:shorturl`
 
-Redirects the user to the long Url mapped with the given shorturl
-
-### `/register`
-
-Creates a new user in the database, The endpoint expects `username`, `email` and `password` in a json request
-
-### `/login`
-
-Expects `email`, `password` in a josn request.
-Response has a JWT Authentication token in the header if a request is a success. The key is `Authentication`.
+Redirects the user to the long Url mapped with the given shorturl, Looked up on the redis database.
 
 ## TODOS
 
