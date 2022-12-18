@@ -14,13 +14,17 @@ import (
 
 type Auth struct{}
 
-func (auth Auth) Register(c *gin.Context) {
-	type signupInfo struct {
-		Email    string `idx:"{email},unique" bson:"email,omitempty" json:"email" binding:"required,email"`
-		Password string `json:"password" binding:"required,min=8"`
-		Username string `idx:"unique" json:"username" binding:"required,min=5,alphanum"`
-	}
+type signupInfo struct {
+	Email    string `idx:"{email},unique" bson:"email,omitempty" json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=8"`
+	Username string `idx:"unique" json:"username" binding:"required,min=5,alphanum"`
+}
+type logininfo struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
 
+func (auth Auth) Register(c *gin.Context) {
 	var info signupInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -84,11 +88,6 @@ func (auth Auth) Delete(c *gin.Context) {
 }
 
 func (auth Auth) Login(c *gin.Context) {
-	type logininfo struct {
-		Email    string `json:"email" binding:"required,email"`
-		Password string `json:"password" binding:"required"`
-	}
-
 	var info logininfo
 	if err := c.ShouldBindJSON(&info); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -123,5 +122,4 @@ func (auth Auth) Login(c *gin.Context) {
 	}
 
 	c.Header("Authentication", token)
-	// return
 }
