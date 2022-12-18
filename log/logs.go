@@ -3,15 +3,16 @@ package log
 import (
 	"os"
 
-	helpers "github.com/jkarage/alinker/env"
+	"github.com/gin-gonic/gin"
+	"github.com/jkarage/alinker/env"
 )
 
 type Log struct{}
 
 // CreateLogger checks if a runtime.log file exists
 // Else creates it with permission 0666
-func CreateLogger() error {
-	f, err := helpers.Env("LOG_FILE", "runtime.log")
+func (l Log) CreateLogger() error {
+	f, err := env.Env("LOG_FILE", "runtime.log")
 	if err != nil {
 		return err
 	}
@@ -26,6 +27,10 @@ func CreateLogger() error {
 	return nil
 }
 
-func WriteLog() {
+func (l Log) Log(c *gin.Context) {
+	// Logging  Implementation to come
+}
 
+func (l Log) Initialize() {
+	l.CreateLogger()
 }
