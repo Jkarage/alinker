@@ -33,7 +33,7 @@ func (s Shortener) CreateShortUrl(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message":   "short url created successfully",
 		"short_url": host + shortUrl,
 	})
@@ -43,7 +43,7 @@ func (s Shortener) CreateShortUrl(c *gin.Context) {
 func (s Shortener) HandleShortUrlRedirect(c *gin.Context) {
 	shortUrl := c.Param("shortUrl")
 	initialUrl := utils.RetrieveInitialUrl(shortUrl)
-	c.Redirect(302, initialUrl)
+	c.Redirect(http.StatusPermanentRedirect, initialUrl)
 }
 
 func (s Shortener) Home(c *gin.Context) {
