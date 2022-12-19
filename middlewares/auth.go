@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/jkarage/alinker/env"
+	"github.com/jkarage/alinker/log"
 	"github.com/jkarage/alinker/utils"
 )
 
@@ -19,10 +20,7 @@ func Authentication() gin.HandlerFunc {
 			return
 		}
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			// if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			// 	return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-			// }
-			secretKey, err := env.Env("SECRET_KEY", "secretkey")
+			secretKey, err := env.Env("SECRET_KEY", "")
 			if err != nil {
 				return nil, err
 			}
@@ -60,6 +58,7 @@ func Authentication() gin.HandlerFunc {
 func ErrorHandler(c *gin.Context) {
 	c.Next()
 	if len(c.Errors) > 0 {
+		log.Write(c.Errors[0])
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"Errors": c.Errors,
 		})

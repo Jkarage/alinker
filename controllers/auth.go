@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/jkarage/alinker/log"
 	"github.com/jkarage/alinker/models/user"
 	"github.com/jkarage/alinker/utils"
 
@@ -27,6 +28,7 @@ type logininfo struct {
 func (auth Auth) Register(c *gin.Context) {
 	var info signupInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
+		log.Write(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -48,6 +50,7 @@ func (auth Auth) Register(c *gin.Context) {
 	var userservice utils.Userservice
 	id, err := userservice.Create(&user)
 	if err != nil {
+		log.Write(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -65,6 +68,7 @@ func (auth Auth) Get(c *gin.Context) {
 	var userservice utils.Userservice
 	user, err := userservice.Get(id)
 	if err != nil {
+		log.Write(err)
 		c.AbortWithError(http.StatusInternalServerError, err)
 	} else {
 		c.String(http.StatusOK, user.String())
@@ -77,12 +81,13 @@ func (auth Auth) Delete(c *gin.Context) {
 
 	err := userservice.Delete(id)
 	if err != nil {
+		log.Write(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	} else {
-		c.String(200, id.String())
+		c.String(http.StatusOK, id.String())
 		return
 	}
 }
@@ -90,6 +95,7 @@ func (auth Auth) Delete(c *gin.Context) {
 func (auth Auth) Login(c *gin.Context) {
 	var info logininfo
 	if err := c.ShouldBindJSON(&info); err != nil {
+		log.Write(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -99,6 +105,7 @@ func (auth Auth) Login(c *gin.Context) {
 	var userservice utils.Userservice
 	user, err := userservice.FindByEmail(info.Email)
 	if err != nil {
+		log.Write(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -107,6 +114,7 @@ func (auth Auth) Login(c *gin.Context) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(info.Password))
 	if err != nil {
+		log.Write(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -115,6 +123,7 @@ func (auth Auth) Login(c *gin.Context) {
 
 	token, err := user.GetToken()
 	if err != nil {
+		log.Write(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})

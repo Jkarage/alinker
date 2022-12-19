@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/jkarage/alinker/env"
+	"github.com/jkarage/alinker/log"
 	"github.com/jkarage/alinker/utils"
 
 	"github.com/gin-gonic/gin"
@@ -25,12 +26,14 @@ func (s Shortener) CreateShortUrl(c *gin.Context) {
 
 	shortUrl, err := utils.GenerateShortLink(creationRequest.LongUrl, c)
 	if err != nil {
+		log.Write(err)
 		panic(err)
 	}
 	utils.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
 
 	host, err := env.Env("APP_HOST"+"/", "alinker.tk/")
 	if err != nil {
+		log.Write(err)
 		panic(err)
 	}
 	c.JSON(http.StatusOK, gin.H{
