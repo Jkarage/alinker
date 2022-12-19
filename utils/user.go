@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/jkarage/alinker/env"
 	"github.com/jkarage/alinker/models/db"
@@ -23,9 +24,9 @@ func (userservice Userservice) Create(user *(user.User)) (primitive.ObjectID, er
 	result := usersCollection.FindOne(ctx, bson.M{"email": user.Email})
 	nameResult := usersCollection.FindOne(ctx, bson.M{"username": user.Username})
 	if result.Err() == nil {
-		return primitive.NilObjectID, errors.New("account with email already exists")
+		return primitive.NilObjectID, fmt.Errorf("account with email %v already exists", user.Email)
 	} else if nameResult.Err() == nil {
-		return primitive.NilObjectID, errors.New("username already taken")
+		return primitive.NilObjectID, fmt.Errorf("username %s already taken", user.Username)
 	} else {
 		insertResult, err := usersCollection.InsertOne(ctx, user)
 		return (insertResult.InsertedID).(primitive.ObjectID), err
