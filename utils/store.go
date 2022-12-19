@@ -3,9 +3,11 @@ package utils
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/jkarage/alinker/env"
 )
 
 type StorageService struct {
@@ -21,10 +23,26 @@ const CacheDuration = 6 * time.Hour
 
 // Initializing the store service and return a store pointer
 func InitializeStore() *StorageService {
+	address, err := env.Env("REDIS_ADDRESS", "localhost:6379")
+	if err != nil {
+		panic(err)
+	}
+	password, err := env.Env("REDIS_PASSWORD", "")
+	if err != nil {
+		panic(err)
+	}
+	dbNumber, err := env.Env("REDIS_DB", "0")
+	if err != nil {
+		panic(err)
+	}
+	db, err := strconv.Atoi(dbNumber)
+	if err != nil {
+		panic(err)
+	}
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
+		Addr:     address,
+		Password: password,
+		DB:       db,
 	})
 
 	pong, err := redisClient.Ping(ctx).Result()
