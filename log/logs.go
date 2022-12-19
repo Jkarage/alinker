@@ -3,34 +3,33 @@ package log
 import (
 	"os"
 
-	"github.com/gin-gonic/gin"
-	"github.com/jkarage/alinker/env"
+	"github.com/sirupsen/logrus"
 )
 
-type Log struct{}
+var log = &logrus.Logger{
+	Formatter: new(logrus.TextFormatter),
+	Hooks:     make(logrus.LevelHooks),
+	Level:     logrus.DebugLevel,
+}
 
 // CreateLogger checks if a runtime.log file exists
 // Else creates it with permission 0666
-func (l Log) CreateLogger() error {
-	f, err := env.Env("LOG_FILE", "runtime.log")
-	if err != nil {
-		return err
+func CreateLogger() error {
+	file, err := os.OpenFile("log/runtime.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err == nil {
+		log.SetOutput(file)
+
+	} else {
+		log.Info("Failed to log to file, using default stderr")
 	}
 
-	lf := "log/" + f
-	if _, err = os.Stat(lf); os.IsNotExist(err) {
-		_, err := os.Create(lf)
-		if err != nil {
-			return err
-		}
-	}
 	return nil
 }
 
-func (l Log) Log(c *gin.Context) {
-	// Logging  Implementation to come
+func Initialize() {
+	CreateLogger()
 }
 
-func (l Log) Initialize() {
-	l.CreateLogger()
+func Write(err error) {
+	log.Error(err)
 }
