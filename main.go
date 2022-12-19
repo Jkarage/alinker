@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-	var log log.Log
 	log.Initialize()
 	r := routers.InitRoute()
 	utils.InitializeStore()
