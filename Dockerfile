@@ -1,15 +1,20 @@
-#build stage
-FROM golang:alpine AS builder
-RUN apk add --no-cache git
-WORKDIR /go/src/app
-COPY . .
-RUN go get -d -v ./...
-RUN go build -o /go/bin/app -v ./...
+# Start from the latest golang base image
+FROM golang:latest
 
-#final stage
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-COPY --from=builder /go/bin/app /app
-ENTRYPOINT /app
-LABEL Name=alinker Version=0.0.1
+# Add Maintainer Info
+LABEL maintainer="Jkarage <joaephbkarage@gmail.com>"
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy everything from the current directory to the Working Directory inside the container
+COPY . .
+
+# Build the Go app
+RUN go build -o main .
+
+# Expose port 8080 to the outside world
 EXPOSE 9800
+
+# Command to run the executable
+CMD ["./main"]
