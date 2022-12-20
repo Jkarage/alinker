@@ -53,9 +53,9 @@ func (s Shortener) Home(c *gin.Context) {
 	c.String(http.StatusOK, `Welcome to alinker API, A free url shortener api.
 	Written using Golang.
 	for more and endpoints found on this api, go to Documentation page
-	at /docs`)
+	at https://alinker.tk/docs`)
 }
 
 func (s Shortener) Docs(c *gin.Context) {
-	c.String(http.StatusOK, `The documentation Page`)
+	c.String(http.StatusOK, `The documentation Page, The docs page is still in progress`)
 }
