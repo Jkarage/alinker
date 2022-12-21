@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/jkarage/alinker/env"
 	"github.com/jkarage/alinker/log"
@@ -50,12 +51,21 @@ func (s Shortener) HandleShortUrlRedirect(c *gin.Context) {
 }
 
 func (s Shortener) Home(c *gin.Context) {
-	c.String(http.StatusOK, `Welcome to alinker API, A free url shortener api.
-	Written using Golang.
-	for more and endpoints found on this api, go to Documentation page
-	at https://alinker.tk/docs`)
+	f, err := os.ReadFile("assets/index.html")
+	if err != nil {
+		log.Write(err)
+		panic(err)
+	}
+	c.Status(http.StatusOK)
+	c.Writer.Write(f)
 }
 
 func (s Shortener) Docs(c *gin.Context) {
-	c.String(http.StatusOK, `The documentation Page, The docs page is still in progress`)
+	f, err := os.ReadFile("assets/docs.html")
+	if err != nil {
+		log.Write(err)
+		panic(err)
+	}
+	c.Status(http.StatusOK)
+	c.Writer.Write(f)
 }

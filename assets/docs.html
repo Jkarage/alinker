@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Page</title>
+</head>
+<body>
+    <h1>Quickstart for alinker API</h1>
+    <p>This project is for showcasing my Golang skills for building apis Its live here <a href="https://alinker.tk">alinker.tk</a></p>
+
+    <article>This article describes how to quickly get started with the alinker REST API.</article>
+    
+    <h3>/register</h3>
+    <p>Creates a new user in the database, The endpoint expects <i>email</i>, <i>username</i> and <i>password</i> in a json formatted request body</p>
+    
+    <b>/login</b>
+    <p>The endpoint expects <i>email</i>, <i>password</i> in a json formatted request body. Response has a JWT Authentication token in the header for a successful request.The key is named `Authentication`.You are supposed to add in the header with the given key Authentication before accessing all secure endpoints</p>
+    
+    <b>/create-short-url</b>
+    <p>Creates the shortened url and returns it, Expects a <i>long_url</i> key in a json request. The user has to be Authenticated to access this endpoint, Authenticated user has a key Authentication having the returned key obtained in the header response after login.</p>
+    
+    <b>/:shorturl</b>
+    <p>Redirects the user to the long Url mapped with the given shorturl, Looked up on the redis database.</p>
+    
+    <b>/docs</b>
+    <p>For clear details and documentation of alinker api.</p>
+    
+    <footer>Author: <a href="https://github.com/jkarage">jkarage</a></footer>
+</body>
+</html>
