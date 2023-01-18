@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/jkarage/alinker/env"
-	"github.com/jkarage/alinker/log"
 	"github.com/jkarage/alinker/utils"
 )
 
@@ -58,7 +57,6 @@ func Authentication() gin.HandlerFunc {
 func ErrorHandler(c *gin.Context) {
 	c.Next()
 	if len(c.Errors) > 0 {
-		log.Write(c.Errors[0])
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"Errors": c.Errors,
 		})

@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/jkarage/alinker/env"
-	"github.com/jkarage/alinker/log"
 	"github.com/jkarage/alinker/utils"
 
 	"github.com/gin-gonic/gin"
@@ -26,17 +25,11 @@ func (s Shortener) CreateShortUrl(c *gin.Context) {
 	}
 
 	shortUrl, err := utils.GenerateShortLink(creationRequest.LongUrl, c)
-	if err != nil {
-		log.Write(err)
-		panic(err)
-	}
+	utils.CheckNilError(err)
 	utils.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
 
 	host, err := env.Env("APP_HOST"+"/", "alinker.tk/")
-	if err != nil {
-		log.Write(err)
-		panic(err)
-	}
+	utils.CheckNilError(err)
 	c.JSON(http.StatusOK, gin.H{
 		"message":   "short url created successfully",
 		"short_url": host + shortUrl,
@@ -52,20 +45,14 @@ func (s Shortener) HandleShortUrlRedirect(c *gin.Context) {
 
 func (s Shortener) Home(c *gin.Context) {
 	f, err := os.ReadFile("assets/index.html")
-	if err != nil {
-		log.Write(err)
-		panic(err)
-	}
+	utils.CheckNilError(err)
 	c.Status(http.StatusOK)
 	c.Writer.Write(f)
 }
 
 func (s Shortener) Docs(c *gin.Context) {
 	f, err := os.ReadFile("assets/docs.html")
-	if err != nil {
-		log.Write(err)
-		panic(err)
-	}
+	utils.CheckNilError(err)
 	c.Status(http.StatusOK)
 	c.Writer.Write(f)
 }
